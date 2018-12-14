@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.TeacherMapper">
+
+	<resultMap id="BaseResultMap" type="domian.Teacher">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="tname" property="tname" jdbcType="VARCHAR" />
+		<result column="phone" property="phone" jdbcType="BIGINT" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="img" property="img" jdbcType="VARCHAR" />
+		<result column="jointime" property="jointime" jdbcType="DATE" />
+		<result column="qq" property="qq" jdbcType="BIGINT" />
+	</resultMap>
+
+	<resultMap id="base_map" type="domian.Teacher">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="tname" property="tname" jdbcType="VARCHAR" />
+		<result column="phone" property="phone" jdbcType="BIGINT" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="img" property="img" jdbcType="VARCHAR" />
+		<result column="jointime" property="jointime" jdbcType="DATE" />
+		<result column="qq" property="qq" jdbcType="BIGINT" />
+		<collection property="courses" ofType="domian.Course"
+			columnPrefix="cou_">
+			<id column="id" property="id" jdbcType="BIGINT" />
+			<result column="cname" property="cname" jdbcType="VARCHAR" />
+			<result column="tmp_id" property="tmpId" jdbcType="BIGINT" />
+			<result column="count" property="count" jdbcType="INTEGER" />
+			<result column="createdtime" property="createdtime" jdbcType="TIMESTAMP" />
+			<result column="state" property="state" jdbcType="INTEGER" />
+		</collection>
+	</resultMap>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from
+		teacher
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+
+	<insert id="insert" parameterType="domian.Teacher"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into teacher (tname, phone,
+		email,
+		img, jointime, qq
+		)
+		values (#{tname,jdbcType=VARCHAR},
+		#{phone,jdbcType=BIGINT},
+		#{email,jdbcType=VARCHAR},
+		#{img,jdbcType=VARCHAR}, #{jointime,jdbcType=DATE},
+		#{qq,jdbcType=BIGINT}
+		)
+	</insert>
+
+	<update id="updateByPrimaryKey" parameterType="domian.Teacher">
+		update teacher
+		set
+		tname = #{tname,jdbcType=VARCHAR},
+		phone = #{phone,jdbcType=BIGINT},
+		email = #{email,jdbcType=VARCHAR},
+		img = #{img,jdbcType=VARCHAR},
+		jointime = #{jointime,jdbcType=DATE},
+		qq
+		= #{qq,jdbcType=BIGINT}
+		where id
+		= #{id,jdbcType=BIGINT}
+	</update>
+
+	<select id="selectByPrimaryKey" resultMap="base_map"
+		parameterType="java.lang.Long">
+		select t.id, t.tname, t.phone, t.email, t.img,
+		t.jointime, t.qq ,c.id
+		as cou_id ,c.cname as cou_cname,c.tmp_id
+		as
+		cou_tmp_id,c.count as
+		cou_count,c.createdtime as
+		cou_createdtime,c.state as cou_state from
+		teacher t LEFT JOIN course c
+		on c.tch_id = t.id where t.id =
+		#{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="selectAll" resultMap="base_map" parameterType="java.lang.Long">
+		select t.id, t.tname, t.phone, t.email, t.img,
+		t.jointime, t.qq ,c.id
+		as cou_id ,c.cname as cou_cname,c.tmp_id
+		as cou_tmp_id,c.count as
+		cou_count,c.createdtime as
+		cou_createdtime,c.state as cou_state from
+		teacher t LEFT JOIN course c
+		on c.tch_id = t.id
+	</select>
+
+</mapper>

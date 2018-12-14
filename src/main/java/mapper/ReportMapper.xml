@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.ReportMapper">
+
+	<resultMap id="BaseResultMap" type="domian.Report">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="tmp_id" property="tmpId" jdbcType="BIGINT" />
+		<result column="stu_id" property="stuId" jdbcType="BIGINT" />
+		<result column="grade" property="grade" jdbcType="VARCHAR" />
+		<result column="createdtime" property="createdtime" jdbcType="TIMESTAMP" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="LONGVARCHAR"/>
+		<result column="cname" property="cname" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="base_map" type="domian.Report">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="tmp_id" property="tmpId" jdbcType="BIGINT" />
+		<result column="stu_id" property="stuId" jdbcType="BIGINT" />
+		<result column="grade" property="grade" jdbcType="VARCHAR" />
+		<result column="createdtime" property="createdtime" jdbcType="TIMESTAMP" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="LONGVARCHAR"/>
+		<result column="cname" property="cname" jdbcType="VARCHAR"/>
+		<association property="courseTemplete" javaType="domian.CourseTemplete"
+			columnPrefix="couTmp_">
+			<id column="id" property="id" jdbcType="BIGINT"/>
+			<result column="cname" property="cname" jdbcType="VARCHAR"/>
+			<result column="cdescribe" property="cdescribe" jdbcType="INTEGER"/>
+			<result column="img" property="img" jdbcType="VARCHAR"/>
+		</association>
+		<association property="student" javaType="domian.Student"
+			columnPrefix="stu_">
+			<id column="id" property="id" jdbcType="BIGINT" />
+			<result column="number" property="number" jdbcType="BIGINT" />
+			<result column="realname" property="realname" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from report
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+
+	<insert id="insert" parameterType="domian.Report"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into report (tmp_id, stu_id, grade,
+		createdtime, remark,content,cname)
+		values (#{tmpId,jdbcType=BIGINT}, #{stuId,jdbcType=BIGINT},
+		#{grade,jdbcType=VARCHAR},
+		#{createdtime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR},
+		#{content,jdbcType=LONGVARCHAR},#{cname,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="updateByPrimaryKey" parameterType="domian.Report">
+		update report
+		set tmp_id = #{tmpId,jdbcType=BIGINT},
+		stu_id = #{stuId,jdbcType=BIGINT},
+		grade = #{grade,jdbcType=VARCHAR},
+		createdtime = #{createdtime,jdbcType=TIMESTAMP},
+		remark = #{remark,jdbcType=VARCHAR},
+		content=#{content,jdbcType=LONGVARCHAR},
+		cname=#{cname,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+
+
+
+
+	<select id="selectByPrimaryKey" resultMap="base_map"
+		parameterType="java.lang.Long">
+		select r.id, r.tmp_id, r.stu_id, r.grade, r.createdtime, r.remark,r.content,r.cname ,c.id as
+		coutmp_id, c.cname as coutmp_cname,c.cdescribe as cou_cdescribe ,c.img as
+		cou_img ,s.id as stu_id ,s.number as stu_number ,s.realname as stu_realname
+		from report r LEFT JOIN coursetemplete c on c.id=r.tmp_id LEFT JOIN student s
+		on s.id=r.stu_id where r.id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectByStuId" resultMap="base_map"
+		parameterType="java.lang.Long">
+		select r.id, r.tmp_id, r.stu_id, r.grade, r.createdtime, r.remark,r.content,r.cname,c.id as
+			coutmp_id, c.cname as coutmp_cname,c.cdescribe as cou_cdescribe ,c.img as
+			cou_img
+				,s.id as stu_id ,s.number as stu_number ,s.realname as stu_realname
+		from report r LEFT JOIN coursetemplete c on c.id=r.tmp_id LEFT JOIN student s
+		on s.id=r.stu_id where r.stu_id = #{stu_id,jdbcType=BIGINT}
+	</select>
+
+	<select id="selectAll" resultMap="base_map">
+		select r.id, r.tmp_id, r.stu_id, r.grade, r.createdtime, r.remark,r.content,r.cname, c.id as
+			coutmp_id, c.cname as coutmp_cname,c.cdescribe as cou_cdescribe ,c.img as
+			cou_img
+				,s.id as stu_id ,s.number as stu_number ,s.realname as stu_realname
+		from report r LEFT JOIN coursetemplete c on c.id=r.tmp_id LEFT JOIN student s
+		on s.id=r.stu_id
+	</select>
+
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.ExperimentlogMapper" >
+  <resultMap id="BaseResultMap" type="domian.Experimentlog" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="cname" property="cname" jdbcType="VARCHAR" />
+    <result column="operatetime" property="operatetime" jdbcType="TIMESTAMP" />
+    <result column="chapter" property="chapter" jdbcType="BIGINT" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from experimentlog
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="domian.Experimentlog" useGeneratedKeys="true" keyProperty="id" >
+    insert into experimentlog (cname, operatetime, chapter, 
+      userid)
+    values (#{cname,jdbcType=VARCHAR}, #{operatetime,jdbcType=TIMESTAMP}, #{chapter,jdbcType=BIGINT}, 
+      #{userid,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="domian.Experimentlog" >
+    update experimentlog
+    set cname = #{cname,jdbcType=VARCHAR},
+      operatetime = #{operatetime,jdbcType=TIMESTAMP},
+      chapter = #{chapter,jdbcType=BIGINT},
+      userid = #{userid,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, cname, operatetime, chapter, userid
+    from experimentlog
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, cname, operatetime, chapter, userid
+    from experimentlog
+  </select>
+</mapper>

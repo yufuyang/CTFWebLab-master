@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.ImagelocalMapper" >
+  <resultMap id="BaseResultMap" type="domian.Imagelocal" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="iname" property="iname" jdbcType="VARCHAR" />
+    <result column="size" property="size" jdbcType="VARCHAR" />
+    <result column="ports" property="ports" jdbcType="VARCHAR" />
+    <result column="createdtime" property="createdtime" jdbcType="TIMESTAMP" />
+    <result column="idescribe" property="idescribe" jdbcType="VARCHAR" />
+    <result column="imageid" property="imageid" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from imagelocal
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="domian.Imagelocal" useGeneratedKeys="true" keyProperty="id" >
+    insert into imagelocal (iname, size, ports, 
+      createdtime, idescribe, imageid
+      )
+    values (#{iname,jdbcType=VARCHAR}, #{size,jdbcType=VARCHAR}, #{ports,jdbcType=VARCHAR}, 
+      #{createdtime,jdbcType=TIMESTAMP}, #{idescribe,jdbcType=VARCHAR}, #{imageid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="domian.Imagelocal" >
+    update imagelocal
+    set iname = #{iname,jdbcType=VARCHAR},
+      size = #{size,jdbcType=VARCHAR},
+      ports = #{ports,jdbcType=VARCHAR},
+      createdtime = #{createdtime,jdbcType=TIMESTAMP},
+      idescribe = #{idescribe,jdbcType=VARCHAR},
+      imageid = #{imageid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, iname, size, ports, createdtime, idescribe, imageid
+    from imagelocal
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, iname, size, ports, createdtime, idescribe, imageid
+    from imagelocal
+  </select>
+</mapper>

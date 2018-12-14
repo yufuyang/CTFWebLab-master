@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.CourseMapper">
+
+    <resultMap id="BaseResultMap" type="domian.Course">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="cname" property="cname" jdbcType="VARCHAR"/>
+        <result column="tch_id" property="tchId" jdbcType="BIGINT"/>
+        <result column="count" property="count" jdbcType="INTEGER"/>
+        <result column="createdtime" property="createdtime" jdbcType="TIMESTAMP"/>
+        <result column="state" property="state" jdbcType="INTEGER"/>
+        <result column="cdescribe" property="cdescribe" jdbcType="LONGVARCHAR"/>
+        <result column="tag" property="tag" jdbcType="VARCHAR"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="base_map" type="domian.Course">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="cname" property="cname" jdbcType="VARCHAR"/>
+        <result column="tch_id" property="tchId" jdbcType="BIGINT"/>
+        <result column="count" property="count" jdbcType="INTEGER"/>
+        <result column="createdtime" property="createdtime" jdbcType="TIMESTAMP"/>
+        <result column="state" property="state" jdbcType="INTEGER"/>
+        <result column="cdescribe" property="cdescribe" jdbcType="LONGVARCHAR"/>
+        <result column="tag" property="tag" jdbcType="VARCHAR"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+        <association property="teacher" javaType="domian.Teacher"
+                     columnPrefix="tch_">
+            <id column="id" property="id" jdbcType="BIGINT"/>
+            <result column="tname" property="tname" jdbcType="VARCHAR"/>
+            <result column="email" property="email" jdbcType="VARCHAR"/>
+            <result column="img" property="img" jdbcType="VARCHAR"/>
+            <result column="qq" property="qq" jdbcType="BIGINT"/>
+            <result column="jointime" property="jointime" jdbcType="TIMESTAMP"/>
+        </association>
+        <collection property="courseTempletes" ofType="domian.CourseTemplete"
+                    columnPrefix="tmp_">
+            <id column="id" property="id" jdbcType="BIGINT"/>
+            <result column="cname" property="cname" jdbcType="VARCHAR"/>
+            <result column="cdescribe" property="cdescribe" jdbcType="INTEGER"/>
+            <result column="img" property="img" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from course
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+
+    <insert id="insert" parameterType="domian.Course"
+            useGeneratedKeys="true" keyProperty="id">
+		insert into course (cname,
+		tch_id,
+		count, createdtime, state,
+		cdescribe,tag,img)
+		values
+		(#{cname,jdbcType=VARCHAR},
+		#{tchId,jdbcType=BIGINT},
+		#{count,jdbcType=INTEGER},
+		#{createdtime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER},
+		#{cdescribe,jdbcType=LONGVARCHAR},#{tag,jdbcType=VARCHAR},#{img,jdbcType=VARCHAR})
+	</insert>
+
+    <update id="updateByPrimaryKey" parameterType="domian.Course">
+		update course
+		set
+		cname = #{cname,jdbcType=VARCHAR},
+		tch_id = #{tchId,jdbcType=BIGINT},
+		count = #{count,jdbcType=INTEGER},
+		createdtime = #{createdtime,jdbcType=TIMESTAMP},
+		state =
+		#{state,jdbcType=INTEGER},
+		cdescribe =
+		#{cdescribe,jdbcType=LONGVARCHAR},tag = #{tag,jdbcType=VARCHAR},img = #{img,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+
+    <select id="selectByPrimaryKey" resultMap="base_map"
+            parameterType="java.lang.Long">
+				select c.id, c.cname,
+		c.tch_id, c.count, c.createdtime,
+		c.state, c.cdescribe ,c.tag,c.img,t.id as
+		tch_id,t.tname as tch_tname, t.img as tch_img,t.email as tch_email,t.qq as tch_qq,t.jointime as tch_jointime, tp.id as tmp_id,tp.cname as tmp_cname
+		from course c LEFT JOIN teacher t ON c.tch_id = t.id LEFT JOIN course_templete ct ON ct.courseId = c.id LEFT JOIN coursetemplete tp ON tp.id = ct.templeteId WHERE c.id = #{id,jdbcType=BIGINT}
+	</select>
+
+    <select id="selectByTchId" resultMap="BaseResultMap"
+            parameterType="java.lang.Long">
+		select id,cname,tmp_id,tch_id,count,createdtime,
+		state,
+		cdescribe from course where tch_id = #{id,jdbcType=BIGINT}
+	</select>
+
+    <select id="selectByStuId" resultMap="BaseResultMap"
+            parameterType="java.lang.Long">
+		select id,cname,tch_id,count,createdtime,state,cdescribe ,img,tag from course c JOIN stu_cou sc on sc.cou_id = c.id WHERE sc.stu_id= #{id}
+	</select>
+
+    <select id="selectAll" resultMap="base_map">
+		select c.id, c.cname,
+		c.tch_id, c.count, c.createdtime,
+		c.state, c.cdescribe ,c.tag,c.img,t.id as
+		tch_id,t.tname as tch_tname, t.img as tch_img
+		from course c LEFT JOIN teacher t ON c.tch_id = t.id
+	</select>
+
+    <select id="selectByPage" resultMap="base_map">
+		select c.id, c.cname,
+		c.tch_id, c.count, c.createdtime,
+		c.state, c.cdescribe ,c.tag,c.img,t.id as
+		tch_id,t.tname as tch_tname, t.img as tch_img
+		from course c LEFT JOIN teacher t ON c.tch_id = t.id ORDER BY c.createdtime desc,c.count desc LIMIT #{beginIndex},#{pageSize}
+	</select>
+
+    <insert id="handleTmpRelation">
+       insert into course_templete (courseId,templeteId) VALUES (#{courseId},#{tmpId})
+    </insert>
+
+    <delete id="deleteTmpRelation">
+     delete from course_templete
+		where courseId = #{courseId,jdbcType=BIGINT}
+    </delete>
+
+    <select id="countCourse" resultType="java.lang.Integer">
+        select COUNT(*) from course
+    </select>
+
+    <select id="checkIsJonined" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM stu_cou WHERE stu_id=#{stuId} AND cou_id=#{couId}
+    </select>
+
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.LogininfoMapper" >
+
+  <resultMap id="BaseResultMap" type="domian.Logininfo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="usertype" property="usertype" jdbcType="INTEGER" />
+    <result column="usercode" property="usercode" jdbcType="BIGINT" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="salt" property="salt" jdbcType="VARCHAR" />
+    <result column="isexp" property="isexp" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="img" property="img" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sys_logininfo
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insert" parameterType="domian.Logininfo" useGeneratedKeys="true" keyProperty="id" >
+    insert into sys_logininfo (usertype, usercode, password,
+      salt, isexp, 
+      userinfo,username)
+    values (#{usertype,jdbcType=INTEGER}, #{usercode,jdbcType=BIGINT}, #{password,jdbcType=VARCHAR}, 
+      #{salt,jdbcType=VARCHAR}, #{isexp,jdbcType=INTEGER}, 
+      #{userinfo,jdbcType=BIGINT}), #{username,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="domian.Logininfo" >
+    update sys_logininfo
+    set usertype = #{usertype,jdbcType=INTEGER},
+      usercode = #{usercode,jdbcType=BIGINT},
+      password = #{password,jdbcType=VARCHAR},
+      salt = #{salt,jdbcType=VARCHAR},
+      isexp = #{isexp,jdbcType=INTEGER},
+      userinfo = #{userinfo,jdbcType=BIGINT},
+      username = #{username,jdbcType=VARCHAR},
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, usertype, usercode, password, salt, locked,userid,username，img
+    from sys_logininfo
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectByUsercode" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, usertype, usercode, password, salt, locked,userid,username,img
+    from sys_logininfo
+    where usercode = #{usercode}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, usertype, usercode, password, salt, locked,userinfo
+    from sys_logininfo
+  </select>
+  
+</mapper>
